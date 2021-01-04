@@ -1,5 +1,6 @@
 import engine.Display;
 import engine.Game;
+import engine.rendering.Graphics;
 import scenes.MainScene;
 
 import java.awt.*;
