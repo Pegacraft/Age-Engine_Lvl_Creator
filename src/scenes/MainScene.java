@@ -3,6 +3,7 @@ package scenes;
 import engine.Scene;
 import engine.mechanics.EntityList;
 import engine.mechanics.Hitbox;
+import engine.mechanics.TextBox;
 import engine.rendering.Graphics;
 import entitys.RegisteredEntity;
 import entitys.UIComponents.CreatorUI;
