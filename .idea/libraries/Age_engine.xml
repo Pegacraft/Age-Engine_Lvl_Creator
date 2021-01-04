@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Age_engine">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Age-engine/out/artifacts/Age_engine_jar/Age_engine.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
