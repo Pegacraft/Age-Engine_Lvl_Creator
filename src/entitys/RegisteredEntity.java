@@ -11,6 +11,7 @@ public class RegisteredEntity extends Entity {
     public String className = "";
     public String paramString = "";
     public BufferedImage previewImage = Image.load("preview.png");
+    public int width = 100, height = 100;
     //Variables end
 
     @Override

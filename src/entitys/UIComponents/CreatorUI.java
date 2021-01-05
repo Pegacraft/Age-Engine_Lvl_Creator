@@ -22,10 +22,11 @@ public class CreatorUI extends Entity {
     TextBox className, params;
     Button create;
 
-    public CreatorUI(int x, int y){
+    public CreatorUI(int x, int y) {
         this.initX = x;
         this.initY = y;
     }
+
     @Override
     public void init() {
         scene = (MainScene) Game.getScene("main");
@@ -33,15 +34,28 @@ public class CreatorUI extends Entity {
         className = new TextBox(initX + 100, initY + 20, 200, 20, scene);
         params = new TextBox(initX + 100, initY + 150, 400, 20, scene);
         create = new Button(initX, initY, 70, 30, scene)
-                .setColor(Color.red)
+                .setColor(Color.darkGray)
+                .setHoverColor(Color.blue)
                 .setText("Create")
-        .addEvent(MouseButtons.LEFT_DOWN, e -> {addToRegistry();});
+                .addEvent(MouseButtons.LEFT_DOWN, e -> {
+                    addToRegistry();
+                });
 
+        //Draw Background
         scene.addObject(new MethodObject(scene).execRenderLoop(e -> {
-            //Draw Background
             g.setColor(Color.gray);
             g.fillRect(x, y, scene.creatorUIDim.width, scene.creatorUIDim.height);
         }));
+
+        //Add descriptions
+        scene.addObject(new MethodObject(scene).execRenderLoop(e -> {
+            g.setColor(Color.black);
+            g.setFont(new Font("base", Font.PLAIN, 15));
+
+            g.drawString("Class name:", x + 110, y + 34);
+            g.drawString("Constructor parameters:", x + 30, y + 165);
+        }));
+
         scene.addObject(className);
         scene.addObject(params);
         scene.addObject(create);
@@ -61,7 +75,7 @@ public class CreatorUI extends Entity {
     public void renderLoop() {
     }
 
-    private void addToRegistry(){
+    private void addToRegistry() {
         //add class to registry
         RegisteredEntity reg = new RegisteredEntity();
         reg.className = className.getText();
