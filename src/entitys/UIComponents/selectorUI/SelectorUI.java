@@ -1,4 +1,4 @@
-package entitys.UIComponents;
+package entitys.UIComponents.selectorUI;
 
 import engine.Entity;
 import engine.Game;
@@ -82,15 +82,15 @@ public class SelectorUI extends Entity {
         pages.clear();
         ArrayList<RegisteredEntity> completeList = scene.registeredEntities;
 
-        int pageCount = (int) Math.ceil((double) completeList.size() / 8);
+        int pageCount = (int) Math.ceil((double) completeList.size() / 12);
 
         for (int i = 0; i <= pageCount - 1; i++) {
             ArrayList<RegisteredEntity> page = new ArrayList<>();
 
-            for (int j = 0; j < 8; j++) {
+            for (int j = 0; j < 12; j++) {
                 try {
-                    page.add(completeList.get(j + (8 * i)));
-                } catch (IndexOutOfBoundsException e){
+                    page.add(completeList.get(j + (12 * i)));
+                } catch (IndexOutOfBoundsException e) {
                     break;
                 }
             }
@@ -99,7 +99,10 @@ public class SelectorUI extends Entity {
         }
     }
 
-    private void load_page(){
-
+    private void load_page() {
+        Dimension objectSize = new Dimension(scene.selectorUIDim.width / 2, scene.selectorUIDim.height / 6);
+        for (int i = 0; i < pages.get(current_page).size(); i++) {
+            //Gewi macht den teil :3
+        }
     }
 }
