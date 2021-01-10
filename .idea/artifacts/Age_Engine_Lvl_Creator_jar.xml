@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Age-Engine_Lvl_Creator:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Age_Engine_Lvl_Creator_jar</output-path>
+    <root id="archive" name="Age-Engine_Lvl_Creator.jar">
+      <element id="module-output" name="Age-Engine_Lvl_Creator" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Age-engine/out/artifacts/Age_engine_jar/Age_engine.jar" path-in-jar="/" />
+      <element id="dir-copy" path="$PROJECT_DIR$/res" />
+    </root>
+  </artifact>
+</component>

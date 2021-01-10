@@ -71,7 +71,7 @@ public class SelectorUI extends Entity {
         page_grid.move(x, y);
 
         //Logic
-        splitInPages();
+        //splitInPages();
     }
 
     @Override
@@ -79,24 +79,7 @@ public class SelectorUI extends Entity {
     }
 
     private void splitInPages() {
-        pages.clear();
-        ArrayList<RegisteredEntity> completeList = scene.registeredEntities;
 
-        int pageCount = (int) Math.ceil((double) completeList.size() / 12);
-
-        for (int i = 0; i <= pageCount - 1; i++) {
-            ArrayList<RegisteredEntity> page = new ArrayList<>();
-
-            for (int j = 0; j < 12; j++) {
-                try {
-                    page.add(completeList.get(j + (12 * i)));
-                } catch (IndexOutOfBoundsException e) {
-                    break;
-                }
-            }
-            pages.add(page);
-            page.clear();
-        }
     }
 
     private void load_page() {

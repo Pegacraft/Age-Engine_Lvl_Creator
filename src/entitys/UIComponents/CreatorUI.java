@@ -7,10 +7,15 @@ import engine.mechanics.Button;
 import engine.mechanics.MethodObject;
 import engine.mechanics.TextBox;
 import engine.rendering.Graphics;
+import entitys.PlacedEntity;
 import entitys.RegisteredEntity;
+import entitys.UIComponents.selectorUI.CanvasObject;
 import scenes.MainScene;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import static engine.rendering.Graphics.g;
 
@@ -21,6 +26,8 @@ public class CreatorUI extends Entity {
     int initX, initY;
     TextBox className, params;
     Button create;
+    Button export;
+    TextBox pkg;
 
     public CreatorUI(int x, int y) {
         this.initX = x;
@@ -31,7 +38,8 @@ public class CreatorUI extends Entity {
     public void init() {
         scene = (MainScene) Game.getScene("main");
 
-        className = new TextBox(initX + 100, initY + 20, 200, 20, scene);
+        pkg = new TextBox(initX + 100, initY + 20, 200, 20, scene);
+        className = new TextBox(initX + 200, initY + 20, 200, 20, scene);
         params = new TextBox(initX + 100, initY + 150, 400, 20, scene);
         create = new Button(initX, initY, 70, 30, scene)
                 .setColor(Color.darkGray)
@@ -39,6 +47,14 @@ public class CreatorUI extends Entity {
                 .setText("Create")
                 .addEvent(MouseButtons.LEFT_DOWN, e -> {
                     addToRegistry();
+                });
+
+        export = new Button(initX, initY, 70, 30, scene)
+                .setColor(Color.darkGray)
+                .setHoverColor(Color.blue)
+                .setText("Export")
+                .addEvent(MouseButtons.LEFT_DOWN, e -> {
+                    export();
                 });
 
         //Draw Background
@@ -52,13 +68,16 @@ public class CreatorUI extends Entity {
             g.setColor(Color.black);
             g.setFont(new Font("base", Font.PLAIN, 15));
 
-            g.drawString("Class name:", x + 110, y + 34);
+            g.drawString("Package root:", x + 110, y + 34);
+            g.drawString("Class name:", x + 510, y + 34);
             g.drawString("Constructor parameters:", x + 30, y + 165);
         }));
 
         scene.addObject(className);
         scene.addObject(params);
         scene.addObject(create);
+        scene.addObject(pkg);
+        scene.addObject(export);
     }
 
     @Override
@@ -66,9 +85,11 @@ public class CreatorUI extends Entity {
         //attach position to cam
         x = -Graphics.getCamPos().x + initX;
         y = -Graphics.getCamPos().y + initY;
-        className.move(x + 200, y + 20);
+        pkg.move(x + 200, y + 20);
         params.move(x + 200, y + 150);
+        className.move(x + 600, y + 20);
         create.move(x + scene.creatorUIDim.width - 100, y + 200);
+        export.move(x + 10, y + 200);
     }
 
     @Override
@@ -78,10 +99,46 @@ public class CreatorUI extends Entity {
     private void addToRegistry() {
         //add class to registry
         RegisteredEntity reg = new RegisteredEntity();
-        reg.className = className.getText();
-        reg.paramString = params.getText().replace(" ", "");
-        System.out.println(reg.paramString);
-        scene.registeredEntities.add(reg);
+        reg.className = pkg.getText()+ "." + className.getText();
+        if (!params.getText().replace(" ", "").equals(""))
+            reg.paramString = params.getText().replace(" ", "");
+        else
+            reg.paramString = "NONE";
+        scene.current = reg;
         System.out.println("Added to registry!");
+    }
+
+    private void export() {
+        //Create file
+        File exportFile = new File("export.age");
+        try {
+            exportFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Write to file
+        try {
+            FileWriter writer = new FileWriter("export.age");
+            //save scene
+            StringBuilder saveTxt = new StringBuilder("");
+
+            scene.placedEntities.getEntityList().forEach(entity -> {
+                saveTxt.append(((CanvasObject) entity).className).append("~");
+                saveTxt.append(entity.x).append("~");
+                saveTxt.append(entity.y).append("~");
+                saveTxt.append(entity.width).append("~");
+                saveTxt.append(entity.height).append("~");
+                saveTxt.append(((CanvasObject) entity).paramString);
+                saveTxt.append("\n");
+            });
+
+            System.out.println("Exported!");
+
+            writer.write(saveTxt.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
