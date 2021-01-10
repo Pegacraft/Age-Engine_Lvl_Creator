@@ -4,6 +4,7 @@ import engine.Scene;
 import engine.listeners.MouseButtons;
 import engine.mechanics.EntityList;
 import engine.mechanics.Hitbox;
+import engine.mechanics.MethodObject;
 import engine.rendering.Graphics;
 import entitys.RegisteredEntity;
 import entitys.UIComponents.CreatorUI;
@@ -13,11 +14,11 @@ import entitys.UIComponents.selectorUI.SelectorUI;
 import static engine.rendering.Graphics.g;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 public class MainScene extends Scene {
     //Variables (Values)
     public Dimension canvasSize = new Dimension(1280, 720);
+    public Dimension camSize = new Dimension(1280, 720);
     public Point camPos = new Point(0, 0);
     public int panSpeed = 10;
     public boolean isDrawing = false;
@@ -32,6 +33,7 @@ public class MainScene extends Scene {
     public CreatorUI creatorUI = new CreatorUI(0, canvasSize.height);
     public SelectorUI selectorUI = new SelectorUI(canvasSize.width, 0);
     private CanvasObject draw;
+    public Hitbox camVision = new Hitbox(new Point(0, 0), new Point(camSize.width, camSize.height));
 
     //Variables (Lists)
     //public ArrayList<RegisteredEntity> registeredEntities = new ArrayList<>();
@@ -56,6 +58,11 @@ public class MainScene extends Scene {
         }, false);
 
         mouseListener.addEvent(MouseButtons.RIGHT_DOWN, e -> {
+            if (isDrawing) {
+                placedEntities.getEntityList().remove(placedEntities.getEntityList().size() - 1);
+                isDrawing = false;
+            }
+
             if (canvas.isInside(mouseListener.getMousePos())) {
                 placedEntities.getEntityList().removeIf(r -> {
                     return ((CanvasObject) r).hitbox.isInside(mouseListener.getMousePos());
@@ -66,6 +73,11 @@ public class MainScene extends Scene {
         //add objects to scene
         //entities
         addObject(placedEntities);
+
+        addObject(new MethodObject(this).execRenderLoop(e -> {
+            g.setColor(Color.cyan);
+            g.draw(camVision.getShape());
+        }));
 
         //UI components
         addObject(creatorUI);
@@ -90,6 +102,7 @@ public class MainScene extends Scene {
 
         //align canvas to cam
         canvas.move(-Graphics.getCamPos().x, -Graphics.getCamPos().y);
+        camVision.move(-Graphics.getCamPos().x, -Graphics.getCamPos().y);
 
         drawToCanvas();
 
@@ -97,9 +110,6 @@ public class MainScene extends Scene {
 
     @Override
     public void renderLoop() {
-        //Show canvas hitbox
-        g.setColor(Color.red);
-        g.draw(canvas.getShape());
     }
 
     private void setDisplaySize() {
