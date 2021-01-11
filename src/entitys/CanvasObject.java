@@ -1,4 +1,4 @@
-package entitys.UIComponents.selectorUI;
+package entitys;
 
 import engine.Entity;
 import engine.mechanics.Hitbox;
@@ -13,8 +13,9 @@ public class CanvasObject extends Entity {
     public String className;
     public Hitbox hitbox = new Hitbox(new Point(x, y), new Point(x + width, y + height));;
     public String paramString;
+    public String type;
 
-    public CanvasObject(int x, int y, int width, int height, BufferedImage previewImage, String className, String paramString) {
+    public CanvasObject(int x, int y, int width, int height, BufferedImage previewImage, String className, String paramString, String type) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -22,6 +23,7 @@ public class CanvasObject extends Entity {
         this.previewImage = previewImage;
         this.className = className;
         this.paramString = paramString;
+        this.type = type;
     }
 
     @Override

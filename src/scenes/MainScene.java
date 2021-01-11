@@ -1,15 +1,19 @@
 package scenes;
 
+import engine.Entity;
 import engine.Scene;
 import engine.listeners.MouseButtons;
+import engine.mechanics.Button;
+import engine.mechanics.DropDownMenu;
 import engine.mechanics.EntityList;
 import engine.mechanics.Hitbox;
 import engine.mechanics.MethodObject;
 import engine.rendering.Graphics;
 import entitys.RegisteredEntity;
-import entitys.UIComponents.CreatorUI;
-import entitys.UIComponents.selectorUI.CanvasObject;
-import entitys.UIComponents.selectorUI.SelectorUI;
+import entitys.UIComponents.CreatorUis.CustomEntityCreatorUI;
+import entitys.CanvasObject;
+import entitys.UIComponents.CreatorUis.TextBoxCreatorUI;
+import entitys.UIComponents.SelectorUIs.SelectorUI;
 
 import static engine.rendering.Graphics.g;
 
@@ -27,13 +31,19 @@ public class MainScene extends Scene {
     //Fixed vars
     public final Dimension creatorUIDim = new Dimension(canvasSize.width, 300);
     public final Dimension selectorUIDim = new Dimension(300, canvasSize.height + creatorUIDim.height);
+    public final Color subButtonColor1 = new Color(90, 90, 90);
+    public final Color subButtonColor2 = new Color(111, 111, 111);
 
     //Variables (Objects)
     public Hitbox canvas = new Hitbox(new Point(0, 0), new Point(canvasSize.width, canvasSize.height));
-    public CreatorUI creatorUI = new CreatorUI(0, canvasSize.height);
+    public CustomEntityCreatorUI customEntityCreatorUI = new CustomEntityCreatorUI(0, canvasSize.height);
+    public TextBoxCreatorUI textBoxCreatorUI = new TextBoxCreatorUI(0, canvasSize.height);
     public SelectorUI selectorUI = new SelectorUI(canvasSize.width, 0);
     private CanvasObject draw;
     public Hitbox camVision = new Hitbox(new Point(0, 0), new Point(camSize.width, camSize.height));
+    public DropDownMenu selectType;
+    public Entity currentSelectorUI = selectorUI;
+    public Entity currentCreatorUI = customEntityCreatorUI;
 
     //Variables (Lists)
     //public ArrayList<RegisteredEntity> registeredEntities = new ArrayList<>();
@@ -43,13 +53,42 @@ public class MainScene extends Scene {
     //Variables end
     @Override
     public void init() {
+        selectType = new DropDownMenu(new Button(10, canvasSize.height + 10, 40, 30, this)
+                .setColor(Color.darkGray)
+                .setHoverColor(Color.blue)
+                .setText("Type"))
+                .addDropDownButton(new Button(0, 0, 70, 30, this)
+                        .setColor(subButtonColor1)
+                        .setHoverColor(Color.blue)
+                        .setText("Custom Entity")
+                        .addEvent(MouseButtons.LEFT_DOWN, e -> {
+                            removeAll();
+                            currentCreatorUI = customEntityCreatorUI;
+                            addObject(currentCreatorUI);
+                            addObject(currentSelectorUI);
+                            addObject(selectType);
+                            selectType.closeMenu();
+                        })
+                )
+                .addDropDownButton(new Button(0, 0, 70, 30, this)
+                        .setColor(subButtonColor2)
+                        .setHoverColor(Color.blue)
+                        .setText("Text Box")
+                        .addEvent(MouseButtons.LEFT_DOWN, e -> {
+                            removeAll();
+                            currentCreatorUI = textBoxCreatorUI;
+                            addObject(currentCreatorUI);
+                            addObject(currentSelectorUI);
+                            addObject(selectType);
+                            selectType.closeMenu();
+                        }));
         setDisplaySize();
         //events
         mouseListener.addEvent(MouseButtons.LEFT_DOWN, e -> {
             if (canvas.isInside(mouseListener.getMousePos()) && current != null) {
                 isDrawing = !isDrawing;
                 if (isDrawing) {
-                    draw = new CanvasObject(mouseListener.getMousePos().x, mouseListener.getMousePos().y, 0, 0, null, current.className, current.paramString);
+                    draw = new CanvasObject(mouseListener.getMousePos().x, mouseListener.getMousePos().y, 0, 0, null, current.className, current.paramString, current.type);
                     x1 = mouseListener.getMousePos().x;
                     y1 = mouseListener.getMousePos().y;
                     placedEntities.add(draw);
@@ -80,8 +119,9 @@ public class MainScene extends Scene {
         }));
 
         //UI components
-        addObject(creatorUI);
-        addObject(selectorUI);
+        addObject(customEntityCreatorUI);
+        addObject(currentSelectorUI);
+        addObject(selectType);
 
         //add objects to scene end
     }
@@ -103,6 +143,8 @@ public class MainScene extends Scene {
         //align canvas to cam
         canvas.move(-Graphics.getCamPos().x, -Graphics.getCamPos().y);
         camVision.move(-Graphics.getCamPos().x, -Graphics.getCamPos().y);
+
+        selectType.move(-Graphics.getCamPos().x + 10, -Graphics.getCamPos().y + canvasSize.height + 10);
 
         drawToCanvas();
 

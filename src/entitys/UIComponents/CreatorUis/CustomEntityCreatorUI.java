@@ -1,4 +1,4 @@
-package entitys.UIComponents;
+package entitys.UIComponents.CreatorUis;
 
 import engine.Entity;
 import engine.Game;
@@ -8,7 +8,7 @@ import engine.mechanics.MethodObject;
 import engine.mechanics.TextBox;
 import engine.rendering.Graphics;
 import entitys.RegisteredEntity;
-import entitys.UIComponents.selectorUI.CanvasObject;
+import entitys.CanvasObject;
 import scenes.MainScene;
 
 import java.awt.*;
@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import static engine.rendering.Graphics.g;
 
-public class CreatorUI extends Entity {
+public class CustomEntityCreatorUI extends Entity {
 
     //reverences
     MainScene scene;
@@ -28,7 +28,7 @@ public class CreatorUI extends Entity {
     Button export;
     TextBox pkg;
 
-    public CreatorUI(int x, int y) {
+    public CustomEntityCreatorUI(int x, int y) {
         this.initX = x;
         this.initY = y;
     }
@@ -72,11 +72,11 @@ public class CreatorUI extends Entity {
             g.drawString("Constructor parameters:", x + 30, y + 165);
         }));
 
-        scene.addObject(className);
-        scene.addObject(params);
-        scene.addObject(create);
-        scene.addObject(pkg);
-        scene.addObject(export);
+        addObject(className);
+        addObject(params);
+        addObject(create);
+        addObject(pkg);
+        addObject(export);
     }
 
     @Override
@@ -99,6 +99,7 @@ public class CreatorUI extends Entity {
         //add class to registry
         RegisteredEntity reg = new RegisteredEntity();
         reg.className = pkg.getText()+ "." + className.getText();
+        reg.type = "CUSTOM";
         if (!params.getText().replace(" ", "").equals(""))
             reg.paramString = params.getText().replace(" ", "");
         else
@@ -123,6 +124,7 @@ public class CreatorUI extends Entity {
             StringBuilder saveTxt = new StringBuilder("");
 
             scene.placedEntities.getEntityList().forEach(entity -> {
+                saveTxt.append(((CanvasObject) entity).type).append("~");
                 saveTxt.append(((CanvasObject) entity).className).append("~");
                 saveTxt.append(entity.x).append("~");
                 saveTxt.append(entity.y).append("~");
