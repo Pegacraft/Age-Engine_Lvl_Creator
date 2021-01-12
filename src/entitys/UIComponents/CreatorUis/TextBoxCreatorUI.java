@@ -24,6 +24,7 @@ public class TextBoxCreatorUI extends Entity {
     MainScene scene;
     int initX, initY;
     TextBox borderColor, textType, fontSize, maxValue, setText, setMatcher;
+    Button create;
 
     public TextBoxCreatorUI(int x, int y) {
         this.initX = x;
@@ -41,6 +42,13 @@ public class TextBoxCreatorUI extends Entity {
         maxValue = new TextBox(initX + 100, initY + 60, 200, 20, scene);
         setText = new TextBox(initX + 100, initY + 80, 200, 20, scene);
         setMatcher = new TextBox(initX + 100, initY + 10, 200, 20, scene);
+        create = new Button(initX, initY, 70, 30, scene)
+                .setColor(Color.darkGray)
+                .setHoverColor(Color.blue)
+                .setText("Create")
+                .addEvent(MouseButtons.LEFT_DOWN, e -> {
+                    this.addToRegistry();
+                });
 
         //Draw Background
         scene.addObject(new MethodObject(scene).execRenderLoop(e -> {
@@ -68,6 +76,7 @@ public class TextBoxCreatorUI extends Entity {
         addObject(maxValue);
         addObject(setText);
         addObject(setMatcher);
+        addObject(create);
     }
 
     @Override
@@ -82,9 +91,51 @@ public class TextBoxCreatorUI extends Entity {
         maxValue.move(x + 200, y + 110);
         setText.move(x + 200, y + 140);
         setMatcher.move(x + 200, y + 170);
+        create.move(x + scene.creatorUIDim.width - 300, y + 200);
     }
 
     @Override
     public void renderLoop() {
+    }
+
+    public void delete() {
+        create.deleteEvent(MouseButtons.LEFT_DOWN);
+    }
+
+    private void addToRegistry() {
+        StringBuilder params = new StringBuilder();
+        if (!borderColor.getText().replace(" ", "").matches(""))
+            params.append(borderColor.getText()).append(",");
+        else
+            params.append("NONE,");
+        if (!textType.getText().replace(" ", "").matches(""))
+            params.append(textType.getText()).append(",");
+        else
+            params.append("NONE,");
+        if (!fontSize.getText().replace(" ", "").matches(""))
+            params.append(fontSize.getText()).append(",");
+        else
+            params.append("NONE,");
+        if (!maxValue.getText().replace(" ", "").matches(""))
+            params.append(maxValue.getText()).append(",");
+        else
+            params.append("NONE,");
+        if (!setText.getText().replace(" ", "").matches(""))
+            params.append(setText.getText()).append(",");
+        else
+            params.append("NONE,");
+        if (!setMatcher.getText().replace(" ", "").matches(""))
+            params.append(setMatcher.getText()).append(",");
+        else
+            params.append("NONE,");
+        //add class to registry
+        RegisteredEntity reg = new RegisteredEntity();
+        reg.className = "engine.mechanics.TextBox";
+        reg.type = "TEXTBOX";
+//        reg.paramString = params.toString().replace(" ", "");
+//        reg.paramString = params.toString().replace("", "NONE");
+        reg.paramString = params.toString();
+        scene.current = reg;
+        System.out.println("Added to registry!");
     }
 }

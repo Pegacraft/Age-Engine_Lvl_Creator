@@ -18,6 +18,9 @@ import entitys.UIComponents.SelectorUIs.SelectorUI;
 import static engine.rendering.Graphics.g;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class MainScene extends Scene {
     //Variables (Values)
@@ -62,11 +65,10 @@ public class MainScene extends Scene {
                         .setHoverColor(Color.blue)
                         .setText("Custom Entity")
                         .addEvent(MouseButtons.LEFT_DOWN, e -> {
+                            textBoxCreatorUI.delete();
                             removeAll();
                             currentCreatorUI = customEntityCreatorUI;
-                            addObject(currentCreatorUI);
-                            addObject(currentSelectorUI);
-                            addObject(selectType);
+                            redraw();
                             selectType.closeMenu();
                         })
                 )
@@ -75,11 +77,10 @@ public class MainScene extends Scene {
                         .setHoverColor(Color.blue)
                         .setText("Text Box")
                         .addEvent(MouseButtons.LEFT_DOWN, e -> {
+                            customEntityCreatorUI.delete();
                             removeAll();
                             currentCreatorUI = textBoxCreatorUI;
-                            addObject(currentCreatorUI);
-                            addObject(currentSelectorUI);
-                            addObject(selectType);
+                            redraw();
                             selectType.closeMenu();
                         }));
         setDisplaySize();
@@ -119,7 +120,7 @@ public class MainScene extends Scene {
         }));
 
         //UI components
-        addObject(customEntityCreatorUI);
+        addObject(currentCreatorUI);
         addObject(currentSelectorUI);
         addObject(selectType);
 
@@ -148,6 +149,54 @@ public class MainScene extends Scene {
 
         drawToCanvas();
 
+    }
+
+    private void redraw(){
+        addObject(placedEntities);
+
+        addObject(new MethodObject(this).execRenderLoop(e -> {
+            g.setColor(Color.cyan);
+            g.draw(camVision.getShape());
+        }));
+
+        addObject(currentCreatorUI);
+        addObject(currentSelectorUI);
+        addObject(selectType);
+    }
+
+    public void export() {
+        //Create file
+        File exportFile = new File("export.age");
+        try {
+            exportFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Write to file
+        try {
+            FileWriter writer = new FileWriter("export.age");
+            //save scene
+            StringBuilder saveTxt = new StringBuilder("");
+
+            placedEntities.getEntityList().forEach(entity -> {
+                saveTxt.append(((CanvasObject) entity).type).append("~");
+                saveTxt.append(((CanvasObject) entity).className).append("~");
+                saveTxt.append(entity.x).append("~");
+                saveTxt.append(entity.y).append("~");
+                saveTxt.append(entity.width).append("~");
+                saveTxt.append(entity.height).append("~");
+                saveTxt.append(((CanvasObject) entity).paramString);
+                saveTxt.append("\n");
+            });
+
+            System.out.println("Exported!");
+
+            writer.write(saveTxt.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

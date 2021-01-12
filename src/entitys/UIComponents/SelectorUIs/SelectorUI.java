@@ -66,7 +66,7 @@ public class SelectorUI extends Entity {
                         scene.camSize.width = Integer.parseInt(screenWidth.getText());
                         scene.camSize.height = Integer.parseInt(screenHeight.getText());
                         scene.camVision = new Hitbox(new Point(0, 0), new Point(scene.camSize.width, scene.camSize.height));
-                        scene.display.setBackgroundColor(new Color(Integer.parseInt(BGColor.getText().replace("#", ""), 16)));
+                        scene.display.setBackgroundColor(new Color(Integer.parseInt(BGColor.getText().replace("#", "").replace(" ",""), 16)));
                     } catch (NumberFormatException ignore) {
                     }
                 });

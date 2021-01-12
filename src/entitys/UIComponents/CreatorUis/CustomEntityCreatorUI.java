@@ -24,8 +24,8 @@ public class CustomEntityCreatorUI extends Entity {
     MainScene scene;
     int initX, initY;
     TextBox className, params;
-    Button create;
-    Button export;
+    public Button create;
+    public Button export;
     TextBox pkg;
 
     public CustomEntityCreatorUI(int x, int y) {
@@ -53,7 +53,7 @@ public class CustomEntityCreatorUI extends Entity {
                 .setHoverColor(Color.blue)
                 .setText("Export")
                 .addEvent(MouseButtons.LEFT_DOWN, e -> {
-                    export();
+                    scene.export();
                 });
 
         //Draw Background
@@ -95,6 +95,11 @@ public class CustomEntityCreatorUI extends Entity {
     public void renderLoop() {
     }
 
+    public void delete(){
+        create.deleteEvent(MouseButtons.LEFT_DOWN);
+        export.deleteEvent(MouseButtons.LEFT_DOWN);
+    }
+
     private void addToRegistry() {
         //add class to registry
         RegisteredEntity reg = new RegisteredEntity();
@@ -106,40 +111,5 @@ public class CustomEntityCreatorUI extends Entity {
             reg.paramString = "NONE";
         scene.current = reg;
         System.out.println("Added to registry!");
-    }
-
-    private void export() {
-        //Create file
-        File exportFile = new File("export.age");
-        try {
-            exportFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //Write to file
-        try {
-            FileWriter writer = new FileWriter("export.age");
-            //save scene
-            StringBuilder saveTxt = new StringBuilder("");
-
-            scene.placedEntities.getEntityList().forEach(entity -> {
-                saveTxt.append(((CanvasObject) entity).type).append("~");
-                saveTxt.append(((CanvasObject) entity).className).append("~");
-                saveTxt.append(entity.x).append("~");
-                saveTxt.append(entity.y).append("~");
-                saveTxt.append(entity.width).append("~");
-                saveTxt.append(entity.height).append("~");
-                saveTxt.append(((CanvasObject) entity).paramString);
-                saveTxt.append("\n");
-            });
-
-            System.out.println("Exported!");
-
-            writer.write(saveTxt.toString());
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
