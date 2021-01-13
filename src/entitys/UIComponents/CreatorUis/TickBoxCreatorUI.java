@@ -6,27 +6,25 @@ import engine.listeners.MouseButtons;
 import engine.mechanics.Button;
 import engine.mechanics.MethodObject;
 import engine.mechanics.TextBox;
+import engine.mechanics.TickBox;
 import engine.rendering.Graphics;
-import entitys.CanvasObject;
 import entitys.RegisteredEntity;
 import scenes.MainScene;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 import static engine.rendering.Graphics.g;
 
-public class TextBoxCreatorUI extends Entity {
+public class TickBoxCreatorUI extends Entity {
 
     //reverences
     MainScene scene;
     int initX, initY;
-    TextBox borderColor, textType, fontSize, maxValue, setText, setMatcher;
+    TextBox borderColor, tickColor, tickImage;
+    TickBox isTicked;
     Button create;
 
-    public TextBoxCreatorUI(int x, int y) {
+    public TickBoxCreatorUI(int x, int y) {
         this.initX = x;
         this.initY = y;
     }
@@ -37,11 +35,9 @@ public class TextBoxCreatorUI extends Entity {
 
         //Objects
         borderColor = new TextBox(initX + 100, initY + 20, 200, 20, scene);
-        textType = new TextBox(initX + 100, initY + 20, 200, 20, scene);
-        fontSize = new TextBox(initX + 100, initY + 40, 200, 20, scene);
-        maxValue = new TextBox(initX + 100, initY + 60, 200, 20, scene);
-        setText = new TextBox(initX + 100, initY + 80, 200, 20, scene);
-        setMatcher = new TextBox(initX + 100, initY + 10, 200, 20, scene);
+        tickColor = new TextBox(initX + 100, initY + 20, 200, 20, scene);
+        tickImage = new TextBox(initX + 100, initY + 40, 200, 20, scene);
+        isTicked = new TickBox(initX + 100, initY + 60, 20, 20, scene);
         create = new Button(initX, initY, 70, 30, scene)
                 .setColor(Color.darkGray)
                 .setHoverColor(Color.blue)
@@ -61,21 +57,17 @@ public class TextBoxCreatorUI extends Entity {
             g.setColor(Color.black);
             g.setFont(new Font("base", Font.PLAIN, 15));
 
-            g.drawString("Border color (Hex):", x + 70, y + 34);
-            g.drawString("Text type:", x + 90, y + 64);
-            g.drawString("Font size:", x + 90, y + 94);
-            g.drawString("Max char value:", x + 90, y + 124);
-            g.drawString("Text:", x + 90, y + 154);
-            g.drawString("Matcher:", x + 90, y + 184);
+            g.drawString("Border color (Hex):", x + 73, y + 34);
+            g.drawString("Tick color (Hex):", x + 90, y + 64);
+            g.drawString("Tick image:", x + 90, y + 94);
+            g.drawString("Is ticked:", x + 90, y + 124);
         }));
 
         //add objects
         addObject(borderColor);
-        addObject(textType);
-        addObject(fontSize);
-        addObject(maxValue);
-        addObject(setText);
-        addObject(setMatcher);
+        addObject(tickColor);
+        addObject(tickImage);
+        addObject(isTicked);
         addObject(create);
     }
 
@@ -86,11 +78,9 @@ public class TextBoxCreatorUI extends Entity {
         y = -Graphics.getCamPos().y + initY;
 
         borderColor.move(x + 200, y + 20);
-        textType.move(x + 200, y + 50);
-        fontSize.move(x + 200, y + 80);
-        maxValue.move(x + 200, y + 110);
-        setText.move(x + 200, y + 140);
-        setMatcher.move(x + 200, y + 170);
+        tickColor.move(x + 200, y + 50);
+        tickImage.move(x + 200, y + 80);
+        isTicked.move(x + 200, y + 110);
         create.move(x + scene.creatorUIDim.width - 100, y + 200);
     }
 
@@ -109,30 +99,19 @@ public class TextBoxCreatorUI extends Entity {
             params.append(borderColor.getText()).append(",");
         else
             params.append("NONE,");
-        if (!textType.getText().replace(" ", "").matches(""))
-            params.append(textType.getText()).append(",");
+        if (!tickColor.getText().replace(" ", "").matches(""))
+            params.append(tickColor.getText()).append(",");
         else
             params.append("NONE,");
-        if (!fontSize.getText().replace(" ", "").matches(""))
-            params.append(fontSize.getText()).append(",");
+        if (!tickImage.getText().replace(" ", "").matches(""))
+            params.append(tickImage.getText()).append(",");
         else
             params.append("NONE,");
-        if (!maxValue.getText().replace(" ", "").matches(""))
-            params.append(maxValue.getText()).append(",");
-        else
-            params.append("NONE,");
-        if (!setText.getText().replace(" ", "").matches(""))
-            params.append(setText.getText()).append(",");
-        else
-            params.append("NONE,");
-        if (!setMatcher.getText().replace(" ", "").matches(""))
-            params.append(setMatcher.getText()).append(",");
-        else
-            params.append("NONE,");
+            params.append(isTicked.isTicked()).append(",");
         //add class to registry
         RegisteredEntity reg = new RegisteredEntity();
-        reg.className = "engine.mechanics.TextBox";
-        reg.type = "TEXTBOX";
+        reg.className = "engine.mechanics.TickBox";
+        reg.type = "TICKBOX";
         reg.paramString = params.toString();
         scene.current = reg;
         System.out.println("Added to registry!");

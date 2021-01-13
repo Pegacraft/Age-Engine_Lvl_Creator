@@ -14,6 +14,7 @@ import entitys.UIComponents.CreatorUis.ButtonCreatorUI;
 import entitys.UIComponents.CreatorUis.CustomEntityCreatorUI;
 import entitys.CanvasObject;
 import entitys.UIComponents.CreatorUis.TextBoxCreatorUI;
+import entitys.UIComponents.CreatorUis.TickBoxCreatorUI;
 import entitys.UIComponents.SelectorUIs.SelectorUI;
 
 import static engine.rendering.Graphics.g;
@@ -43,6 +44,7 @@ public class MainScene extends Scene {
     public CustomEntityCreatorUI customEntityCreatorUI = new CustomEntityCreatorUI(0, canvasSize.height);
     public TextBoxCreatorUI textBoxCreatorUI = new TextBoxCreatorUI(0, canvasSize.height);
     public ButtonCreatorUI buttonCreatorUI = new ButtonCreatorUI(0, canvasSize.height);
+    public TickBoxCreatorUI tickBoxCreatorUI = new TickBoxCreatorUI(0, canvasSize.height);
     public SelectorUI selectorUI = new SelectorUI(canvasSize.width, 0);
     private CanvasObject draw;
     public Hitbox camVision = new Hitbox(new Point(0, 0), new Point(camSize.width, camSize.height));
@@ -50,8 +52,7 @@ public class MainScene extends Scene {
     public Entity currentSelectorUI = selectorUI;
     public Entity currentCreatorUI = customEntityCreatorUI;
 
-    //Variables (Lists)
-    //public ArrayList<RegisteredEntity> registeredEntities = new ArrayList<>();
+    //Variables (Lists);
     public RegisteredEntity current = null;
     public EntityList placedEntities = new EntityList();
 
@@ -92,6 +93,16 @@ public class MainScene extends Scene {
                             currentCreatorUI = buttonCreatorUI;
                             redraw();
                             selectType.closeMenu();
+                        }))
+                .addDropDownButton(new Button(0, 0, 70, 30, this)
+                        .setColor(subButtonColor2)
+                        .setHoverColor(Color.blue)
+                        .setText("Tick box")
+                        .addEvent(MouseButtons.LEFT_DOWN, e -> {
+                            removeAll();
+                            currentCreatorUI = tickBoxCreatorUI;
+                            redraw();
+                            selectType.closeMenu();
                         }));
         setDisplaySize();
         //events
@@ -127,9 +138,7 @@ public class MainScene extends Scene {
             }
 
             if (canvas.isInside(mouseListener.getMousePos())) {
-                placedEntities.getEntityList().removeIf(r -> {
-                    return ((CanvasObject) r).hitbox.isInside(mouseListener.getMousePos());
-                });
+                placedEntities.getEntityList().removeIf(r -> ((CanvasObject) r).hitbox.isInside(mouseListener.getMousePos()));
             }
         }, false);
 
@@ -200,7 +209,7 @@ public class MainScene extends Scene {
         try {
             FileWriter writer = new FileWriter("export.age");
             //save scene
-            StringBuilder saveTxt = new StringBuilder("");
+            StringBuilder saveTxt = new StringBuilder();
 
             placedEntities.getEntityList().forEach(entity -> {
                 saveTxt.append(((CanvasObject) entity).type).append("~");

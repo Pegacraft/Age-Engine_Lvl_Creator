@@ -68,7 +68,7 @@ public class CustomEntityCreatorUI extends Entity {
             g.setFont(new Font("base", Font.PLAIN, 15));
 
             g.drawString("Package root:", x + 110, y + 34);
-            g.drawString("Class name:", x + scene.creatorUIDim.width - 340, y + 104);
+            g.drawString("Class name:", x + 110, y + 104);
             g.drawString("Constructor parameters:", x + 30, y + 165);
         }));
 
@@ -86,7 +86,7 @@ public class CustomEntityCreatorUI extends Entity {
         y = -Graphics.getCamPos().y + initY;
         pkg.move(x + 200, y + 20);
         params.move(x + 200, y + 150);
-        className.move(x + scene.creatorUIDim.width - 250, y + 90);
+        className.move(x + 200, y + 90);
         create.move(x + scene.creatorUIDim.width - 100, y + 200);
         export.move(x + 10, y + 200);
     }

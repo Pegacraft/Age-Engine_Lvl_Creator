@@ -57,12 +57,12 @@ public class ButtonCreatorUI extends Entity {
             g.setColor(Color.black);
             g.setFont(new Font("base", Font.PLAIN, 15));
 
-            g.drawString("Color:", x + 90, y + 34);
-            g.drawString("Hover color:", x + 90, y + 64);
+            g.drawString("Color (Hex):", x + 90, y + 34);
+            g.drawString("Hover color (Hex):", x + 70, y + 64);
             g.drawString("Text:", x + 90, y + 94);
             g.drawString("Font:", x + 90, y + 124);
             g.drawString("Font size:", x + 90, y + 154);
-            g.drawString("Text color:", x + 90, y + 184);
+            g.drawString("Text color (Hex):", x + 90, y + 184);
         }));
 
         //add objects
