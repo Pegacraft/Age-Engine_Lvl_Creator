@@ -95,15 +95,17 @@ public class CustomEntityCreatorUI extends Entity {
     public void renderLoop() {
     }
 
-    public void delete(){
-        create.deleteEvent(MouseButtons.LEFT_DOWN);
-        export.deleteEvent(MouseButtons.LEFT_DOWN);
+    public void delete() {
+        if (create != null)
+            create.deleteEvent(MouseButtons.LEFT_DOWN);
+        if (export != null)
+            export.deleteEvent(MouseButtons.LEFT_DOWN);
     }
 
     private void addToRegistry() {
         //add class to registry
         RegisteredEntity reg = new RegisteredEntity();
-        reg.className = pkg.getText()+ "." + className.getText();
+        reg.className = pkg.getText() + "." + className.getText();
         reg.type = "CUSTOM";
         if (!params.getText().replace(" ", "").equals(""))
             reg.paramString = params.getText().replace(" ", "");

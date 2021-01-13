@@ -7,26 +7,22 @@ import engine.mechanics.Button;
 import engine.mechanics.MethodObject;
 import engine.mechanics.TextBox;
 import engine.rendering.Graphics;
-import entitys.CanvasObject;
 import entitys.RegisteredEntity;
 import scenes.MainScene;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 import static engine.rendering.Graphics.g;
 
-public class TextBoxCreatorUI extends Entity {
+public class ButtonCreatorUI extends Entity {
 
     //reverences
     MainScene scene;
     int initX, initY;
-    TextBox borderColor, textType, fontSize, maxValue, setText, setMatcher;
+    TextBox color, hoverColor, text, font, fontSize, textColor;
     Button create;
 
-    public TextBoxCreatorUI(int x, int y) {
+    public ButtonCreatorUI(int x, int y) {
         this.initX = x;
         this.initY = y;
     }
@@ -36,12 +32,12 @@ public class TextBoxCreatorUI extends Entity {
         scene = (MainScene) Game.getScene("main");
 
         //Objects
-        borderColor = new TextBox(initX + 100, initY + 20, 200, 20, scene);
-        textType = new TextBox(initX + 100, initY + 20, 200, 20, scene);
-        fontSize = new TextBox(initX + 100, initY + 40, 200, 20, scene);
-        maxValue = new TextBox(initX + 100, initY + 60, 200, 20, scene);
-        setText = new TextBox(initX + 100, initY + 80, 200, 20, scene);
-        setMatcher = new TextBox(initX + 100, initY + 10, 200, 20, scene);
+        color = new TextBox(initX + 100, initY + 20, 200, 20, scene);
+        hoverColor = new TextBox(initX + 100, initY + 20, 200, 20, scene);
+        text = new TextBox(initX + 100, initY + 40, 200, 20, scene);
+        font = new TextBox(initX + 100, initY + 60, 200, 20, scene);
+        fontSize = new TextBox(initX + 100, initY + 80, 200, 20, scene);
+        textColor = new TextBox(initX + 100, initY + 10, 200, 20, scene);
         create = new Button(initX, initY, 70, 30, scene)
                 .setColor(Color.darkGray)
                 .setHoverColor(Color.blue)
@@ -61,21 +57,21 @@ public class TextBoxCreatorUI extends Entity {
             g.setColor(Color.black);
             g.setFont(new Font("base", Font.PLAIN, 15));
 
-            g.drawString("Border color:", x + 90, y + 34);
-            g.drawString("Text type:", x + 90, y + 64);
-            g.drawString("Font size:", x + 90, y + 94);
-            g.drawString("Max char value:", x + 90, y + 124);
-            g.drawString("Text:", x + 90, y + 154);
-            g.drawString("Matcher:", x + 90, y + 184);
+            g.drawString("Color:", x + 90, y + 34);
+            g.drawString("Hover color:", x + 90, y + 64);
+            g.drawString("Text:", x + 90, y + 94);
+            g.drawString("Font:", x + 90, y + 124);
+            g.drawString("Font size:", x + 90, y + 154);
+            g.drawString("Text color:", x + 90, y + 184);
         }));
 
         //add objects
-        addObject(borderColor);
-        addObject(textType);
+        addObject(color);
+        addObject(hoverColor);
+        addObject(text);
+        addObject(font);
         addObject(fontSize);
-        addObject(maxValue);
-        addObject(setText);
-        addObject(setMatcher);
+        addObject(textColor);
         addObject(create);
     }
 
@@ -85,12 +81,12 @@ public class TextBoxCreatorUI extends Entity {
         x = -Graphics.getCamPos().x + initX;
         y = -Graphics.getCamPos().y + initY;
 
-        borderColor.move(x + 200, y + 20);
-        textType.move(x + 200, y + 50);
-        fontSize.move(x + 200, y + 80);
-        maxValue.move(x + 200, y + 110);
-        setText.move(x + 200, y + 140);
-        setMatcher.move(x + 200, y + 170);
+        color.move(x + 200, y + 20);
+        hoverColor.move(x + 200, y + 50);
+        text.move(x + 200, y + 80);
+        font.move(x + 200, y + 110);
+        fontSize.move(x + 200, y + 140);
+        textColor.move(x + 200, y + 170);
         create.move(x + scene.creatorUIDim.width - 100, y + 200);
     }
 
@@ -105,34 +101,34 @@ public class TextBoxCreatorUI extends Entity {
 
     private void addToRegistry() {
         StringBuilder params = new StringBuilder();
-        if (!borderColor.getText().replace(" ", "").matches(""))
-            params.append(borderColor.getText()).append(",");
+        if (!color.getText().replace(" ", "").matches(""))
+            params.append(color.getText()).append(",");
         else
             params.append("NONE,");
-        if (!textType.getText().replace(" ", "").matches(""))
-            params.append(textType.getText()).append(",");
+        if (!hoverColor.getText().replace(" ", "").matches(""))
+            params.append(hoverColor.getText()).append(",");
+        else
+            params.append("NONE,");
+        if (!text.getText().replace(" ", "").matches(""))
+            params.append(text.getText()).append(",");
+        else
+            params.append("NONE,");
+        if (!font.getText().replace(" ", "").matches(""))
+            params.append(font.getText()).append(",");
         else
             params.append("NONE,");
         if (!fontSize.getText().replace(" ", "").matches(""))
             params.append(fontSize.getText()).append(",");
         else
             params.append("NONE,");
-        if (!maxValue.getText().replace(" ", "").matches(""))
-            params.append(maxValue.getText()).append(",");
-        else
-            params.append("NONE,");
-        if (!setText.getText().replace(" ", "").matches(""))
-            params.append(setText.getText()).append(",");
-        else
-            params.append("NONE,");
-        if (!setMatcher.getText().replace(" ", "").matches(""))
-            params.append(setMatcher.getText()).append(",");
+        if (!textColor.getText().replace(" ", "").matches(""))
+            params.append(textColor.getText()).append(",");
         else
             params.append("NONE,");
         //add class to registry
         RegisteredEntity reg = new RegisteredEntity();
-        reg.className = "engine.mechanics.TextBox";
-        reg.type = "TEXTBOX";
+        reg.className = "engine.mechanics.Button";
+        reg.type = "BUTTON";
         reg.paramString = params.toString();
         scene.current = reg;
         System.out.println("Added to registry!");

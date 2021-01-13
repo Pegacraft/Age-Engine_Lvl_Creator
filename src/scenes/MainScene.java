@@ -10,6 +10,7 @@ import engine.mechanics.Hitbox;
 import engine.mechanics.MethodObject;
 import engine.rendering.Graphics;
 import entitys.RegisteredEntity;
+import entitys.UIComponents.CreatorUis.ButtonCreatorUI;
 import entitys.UIComponents.CreatorUis.CustomEntityCreatorUI;
 import entitys.CanvasObject;
 import entitys.UIComponents.CreatorUis.TextBoxCreatorUI;
@@ -41,6 +42,7 @@ public class MainScene extends Scene {
     public Hitbox canvas = new Hitbox(new Point(0, 0), new Point(canvasSize.width, canvasSize.height));
     public CustomEntityCreatorUI customEntityCreatorUI = new CustomEntityCreatorUI(0, canvasSize.height);
     public TextBoxCreatorUI textBoxCreatorUI = new TextBoxCreatorUI(0, canvasSize.height);
+    public ButtonCreatorUI buttonCreatorUI = new ButtonCreatorUI(0, canvasSize.height);
     public SelectorUI selectorUI = new SelectorUI(canvasSize.width, 0);
     private CanvasObject draw;
     public Hitbox camVision = new Hitbox(new Point(0, 0), new Point(camSize.width, camSize.height));
@@ -65,7 +67,6 @@ public class MainScene extends Scene {
                         .setHoverColor(Color.blue)
                         .setText("Custom Entity")
                         .addEvent(MouseButtons.LEFT_DOWN, e -> {
-                            textBoxCreatorUI.delete();
                             removeAll();
                             currentCreatorUI = customEntityCreatorUI;
                             redraw();
@@ -77,9 +78,18 @@ public class MainScene extends Scene {
                         .setHoverColor(Color.blue)
                         .setText("Text Box")
                         .addEvent(MouseButtons.LEFT_DOWN, e -> {
-                            customEntityCreatorUI.delete();
                             removeAll();
                             currentCreatorUI = textBoxCreatorUI;
+                            redraw();
+                            selectType.closeMenu();
+                        }))
+                .addDropDownButton(new Button(0, 0, 70, 30, this)
+                        .setColor(subButtonColor1)
+                        .setHoverColor(Color.blue)
+                        .setText("Button")
+                        .addEvent(MouseButtons.LEFT_DOWN, e -> {
+                            removeAll();
+                            currentCreatorUI = buttonCreatorUI;
                             redraw();
                             selectType.closeMenu();
                         }));
@@ -89,10 +99,23 @@ public class MainScene extends Scene {
             if (canvas.isInside(mouseListener.getMousePos()) && current != null) {
                 isDrawing = !isDrawing;
                 if (isDrawing) {
-                    draw = new CanvasObject(mouseListener.getMousePos().x, mouseListener.getMousePos().y, 0, 0, null, current.className, current.paramString, current.type);
+                    draw = new CanvasObject(mouseListener.getMousePos().x,
+                            mouseListener.getMousePos().y,
+                            0,
+                            0,
+                            null,
+                            current.className,
+                            current.paramString,
+                            current.type,
+                            placedEntities.getEntityList().indexOf(draw));
                     x1 = mouseListener.getMousePos().x;
                     y1 = mouseListener.getMousePos().y;
                     placedEntities.add(draw);
+                    placedEntities.getEntityList().forEach(o -> {
+                        CanvasObject placedEntity = (CanvasObject) o;
+
+                        placedEntity.reverence = placedEntities.getEntityList().indexOf(o);
+                    });
                 }
             }
         }, false);
@@ -151,7 +174,7 @@ public class MainScene extends Scene {
 
     }
 
-    private void redraw(){
+    private void redraw() {
         addObject(placedEntities);
 
         addObject(new MethodObject(this).execRenderLoop(e -> {

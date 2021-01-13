@@ -14,8 +14,9 @@ public class CanvasObject extends Entity {
     public Hitbox hitbox = new Hitbox(new Point(x, y), new Point(x + width, y + height));;
     public String paramString;
     public String type;
+    public int reverence = 0;
 
-    public CanvasObject(int x, int y, int width, int height, BufferedImage previewImage, String className, String paramString, String type) {
+    public CanvasObject(int x, int y, int width, int height, BufferedImage previewImage, String className, String paramString, String type, int reverence) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -24,6 +25,7 @@ public class CanvasObject extends Entity {
         this.className = className;
         this.paramString = paramString;
         this.type = type;
+        this.reverence = reverence;
     }
 
     @Override
@@ -42,5 +44,6 @@ public class CanvasObject extends Entity {
         g.setColor(Color.white);
         g.draw(hitbox.getShape());
         g.drawString(className, x, y + 15);
+        g.drawString("List Pos: " + reverence, x, y + 25);
     }
 }
